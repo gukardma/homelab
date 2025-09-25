@@ -1,0 +1,49 @@
+services:
+  influxdb2:
+    container_name: influxdb2
+    image: influxdb:2
+    ports:
+      - "${INFLUXDB_PORT}:8086"
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: ${INFLUXDB_USERNAME}
+      DOCKER_INFLUXDB_INIT_PASSWORD: ${INFLUXDB_PASSWORD}
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${INFLUXDB_TOKEN}
+      DOCKER_INFLUXDB_INIT_ORG: ${INFLUXDB_ORG}
+      DOCKER_INFLUXDB_INIT_BUCKET: ${INFLUXDB_BUCKET}
+    volumes:
+      - influxdb_data:/var/lib/influxdb2
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "${GRAFANA_PORT}:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
+    depends_on:
+      - influxdb2
+    restart: unless-stopped
+
+  # telegraf:
+  #   container_name: telegraf
+  #   image: telegraf
+  #   depends_on:
+  #     - influxdb2
+  #   environment:
+  #     - INFLUXDB_HOST=${INFLUXDB_HOST}
+  #     - INFLUXDB_TOKEN=${INFLUXDB_TOKEN}
+  #     - INFLUXDB_ORG=${INFLUXDB_ORG}
+  #     - INFLUXDB_BUCKET=${INFLUXDB_BUCKET}
+  #     - TELEGRAF_COLLECTION_INTERVAL=${TELEGRAF_COLLECTION_INTERVAL}
+  #     - HOSTNAME=telegraf
+  #   volumes:
+  #     - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf
+  #   restart: unless-stopped
+
+volumes:
+  influxdb_data:
+  grafana_data:
