@@ -1,0 +1,20 @@
+name: Deploy Infrastructure
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+    
+jobs:
+  tf_deploy:
+    uses: path/to/workflows/deploy_proxmox_infra.yml
+    with:
+      tf_version: 1.13.2
+    secrets:
+      pve_api_url: ${{ secrets.PVE_API_URL }}
+      pve_token_id: ${{ secrets.PVE_TOKEN_ID }}
+      pve_token_secret: ${{ secrets.PVE_TOKEN_SECRET }}
+      tf_backend_path: ${{ secrets.TF_BACKEND_PATH }} # Reminder to self: remove
