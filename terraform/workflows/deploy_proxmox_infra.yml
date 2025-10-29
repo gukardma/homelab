@@ -13,7 +13,9 @@ on:
         required: true
       pve_token_secret:
         required: true
-      tf_backend_path:
+      minio_access_key_id:
+        required: true
+      minio_secret_access_key:
         required: true
 
 permissions:
@@ -27,11 +29,12 @@ jobs:
     container:
       image: hashicorp/terraform:${{ inputs.tf_version }}
 
-    # Reminder to self: add MinIO S3 secret
     env:
       TF_VAR_pve_api_url: ${{ secrets.PVE_API_URL }}
       TF_VAR_pve_token_id: ${{ secrets.PVE_TOKEN_ID }}
       TF_VAR_pve_token_secret: ${{ secrets.PVE_TOKEN_SECRET }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.MINIO_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.MINIO_SECRET_ACCESS_KEY }}
 
     steps:
       - name: Checkout Repo
@@ -39,7 +42,7 @@ jobs:
 
       - name: Terraform init
         id: init
-        run: terraform init -input=false
+        run: terraform init -reconfigure -input=false
       
       - name: Terraform validation
         id: validate

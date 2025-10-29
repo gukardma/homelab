@@ -17,4 +17,5 @@ jobs:
       pve_api_url: ${{ secrets.PVE_API_URL }}
       pve_token_id: ${{ secrets.PVE_TOKEN_ID }}
       pve_token_secret: ${{ secrets.PVE_TOKEN_SECRET }}
-      tf_backend_path: ${{ secrets.TF_BACKEND_PATH }} # Reminder to self: remove
+      minio_access_key_id: ${{ secrets.MINIO_ACCESS_KEY_ID }}
+      minio_secret_access_key: ${{ secrets.MINIO_SECRET_ACCESS_KEY }}
