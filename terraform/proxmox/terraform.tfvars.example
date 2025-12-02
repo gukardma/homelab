@@ -1,0 +1,12 @@
+# Example terraform variables file
+# Copy this to terraform.tfvars and fill in your actual values
+
+ci_ssh_keys = <<EOF
+ssh-ed25519 YOUR_SSH_PUBLIC_KEY_HERE user@hostname
+ssh-ed25519 ANOTHER_SSH_PUBLIC_KEY_HERE user@hostname
+EOF
+
+target_node = "your-proxmox-node"
+clone_template = "your-template-name"
+ci_user = "ubuntu"
+ci_ipv4_gateway = "192.168.20.1"

@@ -1,0 +1,100 @@
+# Terraform state files and directories
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+terraform.tfstate.d/
+.terraform/
+.terraform.lock.hcl
+crash.log
+crash.*.log
+
+# Terraform plan files
+*.tfplan
+*.tfplan.*
+
+# Sensitive variable files
+secrets.tf
+secret.tf
+*secret*.tf
+*secrets*.tf
+terraform.tfvars.local
+*.auto.tfvars
+*.auto.tfvars.json
+
+# SSH keys and certificates
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+id_rsa*
+id_ed25519*
+authorized_keys*
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.staging
+.env.development
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Backup files
+*.backup
+*.bak
+*.tmp
+
+# Log files
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Dependency directories
+node_modules/
+vendor/
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# Ansible vault files
+*.vault
+*vault*
+
+# Kubernetes secrets
+*secret*.yaml
+*secret*.yml
+
+# Docker related sensitive files
+docker-compose.override.yml
+.dockerignore
+
+# Local terraform modules cache
+.terraform.d/
+
+# Override files as they are usually used for local development
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json

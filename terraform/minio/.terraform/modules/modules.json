@@ -1,1 +1,0 @@
-{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"proxmox_remote_state","Source":"./modules/remote_state","Dir":"modules/remote_state"},{"Key":"test","Source":"./modules/remote_state","Dir":"modules/remote_state"}]}
