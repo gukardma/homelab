@@ -1,4 +1,4 @@
-name: Deploy Proxmox Infrastructure
+name: Deploy MinIO Infrastructure
 
 on:
   workflow_call:
@@ -7,35 +7,47 @@ on:
         type: string
         required: true
     secrets:
-      pve_api_url:
+      aws_region:
         required: true
-      pve_token_id:
+      aws_endpoint_url_s3:
         required: true
-      pve_token_secret:
+      aws_access_key_id:
         required: true
-      minio_access_key_id:
-        required: true
-      minio_secret_access_key:
+      aws_secret_access_key:
         required: true
 
+      minio_endpoint:
+        required: true
+      minio_user:
+        required: true
+      minio_password:
+        required: true
 permissions:
   contents: read
 
 jobs:
   terraform_deploy:
-    name: Deploy Proxmox infrastructure
+    name: Deploy MinIO infrastructure
     runs-on: self-hosted
     
     container:
       image: hashicorp/terraform:${{ inputs.tf_version }}
 
     env:
-      TF_VAR_pve_api_url: ${{ secrets.PVE_API_URL }}
-      TF_VAR_pve_token_id: ${{ secrets.PVE_TOKEN_ID }}
-      TF_VAR_pve_token_secret: ${{ secrets.PVE_TOKEN_SECRET }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.MINIO_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.MINIO_SECRET_ACCESS_KEY }}
+      # S3 backend env variables
+      AWS_REGION: ${{ secrets.aws_region }}
+      AWS_ENDPOINT_URL_S3: ${{ secrets.aws_endpoint_url_s3 }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.aws_access_key_id }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.aws_secret_access_key }}
 
+      # MinIO provider env variables
+      MINIO_ENDPOINT: ${{ secrets.minio_endpoint }}
+      MINIO_USER: ${{ secrets.minio_user }}
+      MINIO_PASSWORD: ${{ secrets.minio_password }}
+
+    defaults:
+      run:
+        working-directory: ./minio
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
