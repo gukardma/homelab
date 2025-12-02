@@ -1,0 +1,70 @@
+name: Deploy MinIO Infrastructure
+
+on:
+  workflow_call:
+    inputs:
+      tf_version:
+        type: string
+        required: true
+    secrets:
+      aws_region:
+        required: true
+      aws_endpoint_url_s3:
+        required: true
+      aws_access_key_id:
+        required: true
+      aws_secret_access_key:
+        required: true
+
+      minio_endpoint:
+        required: true
+      minio_user:
+        required: true
+      minio_password:
+        required: true
+permissions:
+  contents: read
+
+jobs:
+  terraform_deploy:
+    name: Deploy MinIO infrastructure
+    runs-on: self-hosted
+    
+    container:
+      image: hashicorp/terraform:${{ inputs.tf_version }}
+
+    env:
+      # S3 backend env variables
+      AWS_REGION: ${{ secrets.aws_region }}
+      AWS_ENDPOINT_URL_S3: ${{ secrets.aws_endpoint_url_s3 }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.aws_access_key_id }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.aws_secret_access_key }}
+
+      # MinIO provider env variables
+      MINIO_ENDPOINT: ${{ secrets.minio_endpoint }}
+      MINIO_USER: ${{ secrets.minio_user }}
+      MINIO_PASSWORD: ${{ secrets.minio_password }}
+
+    defaults:
+      run:
+        working-directory: ./minio
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Terraform init
+        id: init
+        run: terraform init -reconfigure -input=false
+      
+      - name: Terraform validation
+        id: validate
+        run: terraform validate -no-color
+      
+      - name: Terraform plan
+        id: plan
+        run: terraform plan -no-color -input=false
+        continue-on-error: false
+
+      - name: Terraform apply
+        id: apply
+        run: terraform apply -auto-approve -input=false

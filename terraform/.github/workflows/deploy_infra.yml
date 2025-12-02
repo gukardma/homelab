@@ -1,0 +1,59 @@
+name: Deploy Infrastructure
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+    
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      minio: ${{ steps.filter.outputs.minio }}
+      proxmox: ${{ steps.filter.outputs.proxmox }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            minio:
+              - 'minio/**'
+            proxmox:
+              - 'proxmox/**'
+
+  # Creating access keys this way is kind of a nightmare. Should redo this
+  deploy_minio:
+    needs: changes
+    if: ${{ needs.changes.outputs.minio == 'true' }}
+    uses: ./.github/workflows/deploy_minio_infra.yml
+    with:
+      tf_version: 1.13.2
+    secrets:
+      aws_region: ${{ secrets.MINIO_REGION }}
+      aws_endpoint_url_s3: ${{ secrets.MINIO_ENDPOINT_URL_S3 }}
+      aws_access_key_id: ${{ secrets.MINIO_HOMELAB_ACCESS_KEY_ID }}
+      aws_secret_access_key: ${{ secrets.MINIO_HOMELAB_SECRET_ACCESS_KEY }}
+
+      minio_endpoint: ${{ secrets.MINIO_ENDPOINT }}
+      minio_user: ${{ secrets.MINIO_HOMELAB_ACCESS_KEY_ID }}
+      minio_password: ${{ secrets.MINIO_HOMELAB_SECRET_ACCESS_KEY }}
+
+  deploy_proxmox:
+    needs: [changes, deploy_minio]
+    if: ${{ needs.changes.outputs.proxmox == 'true' && (needs.deploy_minio.result == 'success' || needs.deploy_minio.result == 'skipped') }}
+    uses: ./.github/workflows/deploy_proxmox_infra.yml
+    with:
+      tf_version: 1.13.2
+    secrets:
+      aws_region: ${{ secrets.MINIO_REGION }}
+      aws_endpoint_url_s3: ${{ secrets.MINIO_ENDPOINT_URL_S3 }}
+      aws_access_key_id: ${{ secrets.MINIO_PVE_ACCESS_KEY_ID }}
+      aws_secret_access_key: ${{ secrets.MINIO_PVE_SECRET_ACCESS_KEY }}
+
+      pm_api_url: ${{ secrets.PM_API_URL }}
+      pm_api_token_id: ${{ secrets.PM_API_TOKEN_ID }}
+      pm_api_token_secret: ${{ secrets.PM_API_TOKEN_SECRET }}
