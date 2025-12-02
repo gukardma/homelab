@@ -1,12 +1,3 @@
-terraform {
-  required_providers {
-    proxmox = {
-      source  = "Telmate/proxmox"
-      version = "3.0.2-rc04"
-    }
-  }
-}
-
 resource "proxmox_vm_qemu" "vm" {
   target_node = var.target_node
   clone       = var.clone
@@ -20,14 +11,14 @@ resource "proxmox_vm_qemu" "vm" {
   agent       = var.agent
 
   cpu {
-    cores     = var.cores
-    sockets   = var.sockets
-    type      = var.type
-    numa      = var.numa
+    cores   = var.cores
+    sockets = var.sockets
+    type    = var.type
+    numa    = var.numa
   }
 
-  memory      = var.memory
-  scsihw      = var.scsihw
+  memory = var.memory
+  scsihw = var.scsihw
 
   disks {
     scsi {
@@ -42,7 +33,7 @@ resource "proxmox_vm_qemu" "vm" {
     ide {
       ide2 {
         cloudinit {
-          storage    = var.storage
+          storage = var.storage
         }
       }
     }
@@ -67,7 +58,7 @@ resource "proxmox_vm_qemu" "vm" {
 
   # Running into some issues, might delete later
   serial {
-    id = 0
+    id   = 0
     type = "socket"
   }
 }

@@ -1,5 +1,7 @@
 # Terraform Proxmox VM Module
 
+(note to self: this file is outdated)
+
 Terraform setup to create and configure VMs.
 
 ## Usage Example
